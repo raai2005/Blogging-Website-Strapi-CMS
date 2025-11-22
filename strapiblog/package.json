@@ -21,7 +21,11 @@
     "better-sqlite3": "12.4.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^6.0.0",
+    "rehype-raw": "^7.0.0",
+    "rehype-sanitize": "^6.0.0",
+    "remark-gfm": "^4.0.1",
     "styled-components": "^6.0.0"
   },
   "devDependencies": {

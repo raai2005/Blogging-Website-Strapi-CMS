@@ -54,6 +54,18 @@
       "relation": "manyToOne",
       "target": "api::category.category",
       "inversedBy": "blog_posts"
+    },
+    "readTime": {
+      "type": "string",
+      "default": "5 min read"
+    },
+    "viewCount": {
+      "type": "integer",
+      "default": 0
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

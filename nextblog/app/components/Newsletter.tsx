@@ -2,15 +2,37 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { subscribeNewsletter } from "@/lib/api";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [message, setMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle newsletter subscription
-    console.log("Newsletter subscription:", email);
-    setEmail("");
+    setStatus('loading');
+    setMessage("");
+
+    try {
+      const result = await subscribeNewsletter(email);
+      if (result.success) {
+        setStatus('success');
+        setMessage('Successfully subscribed to newsletter!');
+        setEmail("");
+      } else {
+        setStatus('error');
+        setMessage('Failed to subscribe. Please try again.');
+      }
+    } catch (error) {
+      setStatus('error');
+      setMessage('An error occurred. Please try again.');
+    }
+
+    setTimeout(() => {
+      setStatus('idle');
+      setMessage("");
+    }, 3000);
   };
 
   return (
@@ -47,15 +69,26 @@ export default function Newsletter() {
           />
           <button
             type="submit"
-            className="px-8 py-4 bg-black dark:bg-white text-white dark:text-black rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors font-semibold whitespace-nowrap"
+            disabled={status === 'loading'}
+            className="px-8 py-4 bg-black dark:bg-white text-white dark:text-black rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors font-semibold whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Subscribe
+            {status === 'loading' ? 'Subscribing...' : 'Subscribe'}
           </button>
         </motion.form>
         
-        <p className="text-sm text-blue-200 dark:text-blue-300 mt-4">
-          We respect your privacy. Unsubscribe at any time.
-        </p>
+        {message && (
+          <p className={`text-sm mt-4 font-medium ${
+            status === 'success' ? 'text-green-200' : 'text-red-200'
+          }`}>
+            {message}
+          </p>
+        )}
+        
+        {!message && (
+          <p className="text-sm text-blue-200 dark:text-blue-300 mt-4">
+            We respect your privacy. Unsubscribe at any time.
+          </p>
+        )}
       </motion.div>
     </section>
   );

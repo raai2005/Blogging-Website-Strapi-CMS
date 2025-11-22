@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { submitContactForm } from "@/lib/api";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -9,10 +10,28 @@ export default function ContactPage() {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData);
+    setStatus('loading');
+    setMessage('');
+
+    try {
+      const result = await submitContactForm(formData);
+      if (result.success) {
+        setStatus('success');
+        setMessage('Message sent successfully! We\'ll get back to you soon.');
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        setStatus('error');
+        setMessage('Failed to send message. Please try again.');
+      }
+    } catch (error) {
+      setStatus('error');
+      setMessage('An error occurred. Please try again.');
+    }
   };
 
   return (
@@ -79,11 +98,22 @@ export default function ContactPage() {
 
           <button
             type="submit"
-            className="w-full px-6 py-3 bg-black dark:bg-white text-white dark:text-black font-medium rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
+            disabled={status === 'loading'}
+            className="w-full px-6 py-3 bg-black dark:bg-white text-white dark:text-black font-medium rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Send Message
+            {status === 'loading' ? 'Sending...' : 'Send Message'}
           </button>
         </form>
+        
+        {message && (
+          <div className={`mt-6 p-4 rounded-lg ${
+            status === 'success' 
+              ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' 
+              : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
+          }`}>
+            {message}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -3,6 +3,11 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 
+// TODO: Hero content can be made dynamic from Strapi
+// Create a "Hero" or "Homepage Settings" single type in Strapi
+// API Endpoint: GET http://localhost:1337/api/hero
+// Fetch title, description, and CTA button text
+
 export default function Hero() {
   return (
     <section className="relative bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-zinc-900 dark:to-zinc-800 py-20 md:py-32">

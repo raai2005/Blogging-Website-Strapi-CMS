@@ -71,6 +71,23 @@
       "relation": "oneToMany",
       "target": "api::blog-post.blog-post",
       "mappedBy": "author"
+    },
+    "bio": {
+      "type": "text"
+    },
+    "avatar": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "twitter": {
+      "type": "string"
+    },
+    "github": {
+      "type": "string"
+    },
+    "linkedin": {
+      "type": "string"
     }
   }
 }
