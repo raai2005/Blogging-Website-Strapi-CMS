@@ -96,6 +96,11 @@ export default function BlogPage() {
                             alt={title}
                             fill
                             className="object-cover group-hover:scale-110 transition-transform duration-700"
+                            unoptimized
+                            onError={(e) => {
+                              console.error('Image failed to load:', coverImageUrl);
+                              e.currentTarget.style.display = 'none';
+                            }}
                           />
                         ) : (
                           <div className="absolute inset-0 flex items-center justify-center text-zinc-500">

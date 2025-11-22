@@ -14,7 +14,7 @@ export default function RecentPosts() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const posts = await getRecentPosts(6);
+        const posts = await getRecentPosts(3);
         setBlogPosts(posts);
       } catch (error) {
         console.error('Error loading posts:', error);
@@ -98,6 +98,7 @@ export default function RecentPosts() {
                           alt={title}
                           fill
                           className="object-cover group-hover:scale-110 transition-transform duration-700"
+                          unoptimized
                         />
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center text-zinc-500">

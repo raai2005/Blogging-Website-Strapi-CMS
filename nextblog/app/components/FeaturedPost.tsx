@@ -80,6 +80,7 @@ export default function FeaturedPost() {
                 alt={title}
                 fill
                 className="object-cover group-hover:scale-110 transition-transform duration-700"
+                unoptimized
               />
             ) : (
               <div className="flex flex-col items-center gap-4">
