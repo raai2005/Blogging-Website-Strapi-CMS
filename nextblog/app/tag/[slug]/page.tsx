@@ -2,7 +2,9 @@
 
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { getPostsByTag } from "@/lib/api";
+import { getCoverImageUrl } from "@/lib/utils";
 
 interface TagPageProps {
   params: Promise<{
@@ -33,8 +35,8 @@ export default function TagPage({ params }: TagPageProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
-        <p className="text-zinc-600 dark:text-zinc-400">Loading...</p>
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <p className="text-zinc-400">Loading...</p>
       </div>
     );
   }
@@ -43,12 +45,12 @@ export default function TagPage({ params }: TagPageProps) {
   const tagName = tagAttrs.name || tag?.name || slug;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black">
+    <div className="min-h-screen bg-black">
       <div className="max-w-4xl mx-auto px-4 py-16">
-        <h1 className="text-4xl font-bold mb-2 text-black dark:text-white">
+        <h1 className="text-4xl font-bold mb-2 text-white">
           #{tagName}
         </h1>
-        <p className="text-zinc-600 dark:text-zinc-400 mb-8">
+        <p className="text-zinc-400 mb-8">
           All posts tagged with this topic
         </p>
 
@@ -62,12 +64,12 @@ export default function TagPage({ params }: TagPageProps) {
               const publishedAt = attributes.publishedAt || post.publishedAt || post.createdAt;
               
               return (
-                <article key={post.id} className="bg-zinc-50 dark:bg-zinc-900 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <article key={post.id} className="bg-zinc-900 rounded-lg p-6 hover:shadow-lg transition-shadow">
                   <Link href={`/blog/${slug}`}>
-                    <h2 className="text-2xl font-bold mb-2 text-black dark:text-white hover:text-blue-600 dark:hover:text-blue-400">
+                    <h2 className="text-2xl font-bold mb-2 text-white hover:text-blue-400">
                       {title}
                     </h2>
-                    <p className="text-zinc-600 dark:text-zinc-400 mb-4">
+                    <p className="text-zinc-400 mb-4">
                       {excerpt}
                     </p>
                     <div className="text-sm text-zinc-500">

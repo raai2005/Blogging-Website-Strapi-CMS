@@ -4,6 +4,7 @@ import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { getBlogPostBySlug } from "@/lib/api";
+import { getCoverImageUrl } from "@/lib/utils";
 import AuthorCard from "@/app/components/AuthorCard";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -37,18 +38,30 @@ export default function BlogPost({ params }: BlogPostProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
-        <p className="text-zinc-600 dark:text-zinc-400">Loading post...</p>
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-violet-500/20 border-t-violet-500 rounded-full animate-spin mb-4 mx-auto"></div>
+          <p className="text-zinc-400">Loading post...</p>
+        </div>
       </div>
     );
   }
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4 text-black dark:text-white">Post Not Found</h1>
-          <Link href="/blog" className="text-blue-600 dark:text-blue-400 hover:underline">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-zinc-800/50 rounded-full mb-6">
+            <svg className="w-10 h-10 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h1 className="text-4xl font-bold mb-4 text-white">Post Not Found</h1>
+          <p className="text-zinc-400 mb-8">The post you're looking for doesn't exist.</p>
+          <Link href="/blog" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-xl hover:from-violet-600 hover:to-purple-700 transition-all duration-300 font-semibold shadow-lg">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
             Back to Blog
           </Link>
         </div>
@@ -62,8 +75,7 @@ export default function BlogPost({ params }: BlogPostProps) {
   const publishedAt = attributes.publishedAt || post.publishedAt || post.createdAt;
   const readTime = attributes.readTime || post.readTime;
   const viewCount = attributes.viewCount || post.viewCount || 0;
-  const coverImage = attributes.coverImage?.data || post.coverImage?.data;
-  const coverImageUrl = coverImage?.attributes?.url || coverImage?.url;
+  const coverImageUrl = getCoverImageUrl(post);
   const category = attributes.category?.data || post.category?.data;
   const categorySlug = category?.attributes?.slug || category?.slug;
   const categoryName = category?.attributes?.name || category?.name;
@@ -71,69 +83,92 @@ export default function BlogPost({ params }: BlogPostProps) {
   const author = attributes.author?.data || post.author?.data;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black">
-      <article className="max-w-3xl mx-auto px-4 py-16">
+    <div className="min-h-screen bg-zinc-950">
+      <article className="max-w-4xl mx-auto px-4 py-12">
         {coverImageUrl && (
-          <div className="relative h-96 mb-8 rounded-2xl overflow-hidden">
+          <div className="relative h-96 md:h-[32rem] mb-12 rounded-3xl overflow-hidden shadow-2xl border border-zinc-800/50">
             <Image
-              src={`http://localhost:1337${coverImageUrl}`}
+              src={coverImageUrl}
               alt={title}
               fill
               className="object-cover"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent"></div>
           </div>
         )}
         
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-black dark:text-white">
-          {title}
-        </h1>
-        
-        <div className="mb-8 flex flex-wrap items-center gap-4 text-sm text-zinc-500 dark:text-zinc-400">
-          <time>{new Date(publishedAt).toLocaleDateString()}</time>
+        <div className="mb-8">
           {categoryName && (
-            <>
-              <span>•</span>
-              <Link href={`/category/${categorySlug}`} className="hover:text-blue-600">
-                {categoryName}
-              </Link>
-            </>
+            <Link 
+              href={`/category/${categorySlug}`}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-violet-500/10 border border-violet-500/20 rounded-full text-violet-300 text-sm font-medium mb-6 backdrop-blur-sm hover:bg-violet-500/20 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              </svg>
+              {categoryName}
+            </Link>
           )}
+          
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white leading-tight">
+            {title}
+          </h1>
+          
+          <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-400 pb-8 border-b border-zinc-800/50">
+            <time className="flex items-center gap-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              {new Date(publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+            </time>
           {readTime && (
             <>
               <span>•</span>
-              <span>📖 {readTime}</span>
+              <span className="flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {readTime}
+              </span>
             </>
           )}
           {viewCount > 0 && (
             <>
               <span>•</span>
-              <span>👁️ {viewCount.toLocaleString()} views</span>
+              <span className="flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                {viewCount.toLocaleString()} views
+              </span>
             </>
           )}
+          </div>
         </div>
 
         {author && (
-          <div className="mb-8">
+          <div className="mb-10">
             <AuthorCard author={author} compact={true} />
           </div>
         )}
 
-        <div className="prose prose-lg dark:prose-invert max-w-none mb-8">
+        <div className="prose prose-lg dark:prose-invert max-w-none mb-12 bg-zinc-900/30 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-zinc-800/50">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeRaw, rehypeSanitize]}
             components={{
-              h1: ({...props}) => <h1 className="text-4xl font-bold mt-8 mb-4 text-black dark:text-white" {...props} />,
-              h2: ({...props}) => <h2 className="text-3xl font-bold mt-6 mb-3 text-black dark:text-white" {...props} />,
-              h3: ({...props}) => <h3 className="text-2xl font-bold mt-5 mb-2 text-black dark:text-white" {...props} />,
-              p: ({...props}) => <p className="text-zinc-700 dark:text-zinc-300 text-lg leading-relaxed mb-4" {...props} />,
-              ul: ({...props}) => <ul className="list-disc list-inside mb-4 text-zinc-700 dark:text-zinc-300" {...props} />,
-              ol: ({...props}) => <ol className="list-decimal list-inside mb-4 text-zinc-700 dark:text-zinc-300" {...props} />,
+              h1: ({...props}) => <h1 className="text-4xl font-bold mt-8 mb-4 text-white" {...props} />,
+              h2: ({...props}) => <h2 className="text-3xl font-bold mt-6 mb-3 text-white" {...props} />,
+              h3: ({...props}) => <h3 className="text-2xl font-bold mt-5 mb-2 text-white" {...props} />,
+              p: ({...props}) => <p className="text-zinc-300 text-lg leading-relaxed mb-6" {...props} />,
+              ul: ({...props}) => <ul className="list-disc list-inside mb-6 text-zinc-300 space-y-2" {...props} />,
+              ol: ({...props}) => <ol className="list-decimal list-inside mb-6 text-zinc-300 space-y-2" {...props} />,
               li: ({...props}) => <li className="mb-2" {...props} />,
-              a: ({...props}) => <a className="text-blue-600 dark:text-blue-400 hover:underline" {...props} />,
-              code: ({...props}) => <code className="bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded text-sm" {...props} />,
-              pre: ({...props}) => <pre className="bg-zinc-100 dark:bg-zinc-800 p-4 rounded-lg overflow-x-auto mb-4" {...props} />,
-              blockquote: ({...props}) => <blockquote className="border-l-4 border-blue-500 pl-4 italic my-4 text-zinc-600 dark:text-zinc-400" {...props} />,
+              a: ({...props}) => <a className="text-violet-400 hover:text-violet-300 underline underline-offset-2" {...props} />,
+              code: ({...props}) => <code className="bg-zinc-800 px-2 py-1 rounded text-sm text-violet-300" {...props} />,
+              pre: ({...props}) => <pre className="bg-zinc-800 p-4 rounded-xl overflow-x-auto mb-6 border border-zinc-700" {...props} />,
+              blockquote: ({...props}) => <blockquote className="border-l-4 border-violet-500 pl-6 italic my-6 text-zinc-400 bg-zinc-800/50 py-4 rounded-r-lg" {...props} />,
             }}
           >
             {content}
@@ -141,9 +176,14 @@ export default function BlogPost({ params }: BlogPostProps) {
         </div>
 
         {tags.length > 0 && (
-          <div className="mt-8 pt-8 border-t border-zinc-200 dark:border-zinc-800">
-            <div className="flex gap-2 flex-wrap">
-              <span className="text-sm text-zinc-600 dark:text-zinc-400">Tags:</span>
+          <div className="mt-8 pt-8 border-t border-zinc-800/50">
+            <div className="flex gap-3 flex-wrap items-center">
+              <span className="text-sm font-semibold text-zinc-400 flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+                Tags:
+              </span>
               {tags.map((tag: any) => {
                 const tagAttrs = tag.attributes || tag;
                 const tagSlug = tagAttrs.slug || tag.slug || tag.id;
@@ -152,9 +192,9 @@ export default function BlogPost({ params }: BlogPostProps) {
                   <Link
                     key={tag.id || tagSlug}
                     href={`/tag/${tagSlug}`}
-                    className="px-3 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-full text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                    className="px-4 py-2 bg-zinc-800/60 text-zinc-300 rounded-xl text-sm hover:bg-violet-500/20 hover:text-violet-300 hover:border-violet-500/30 border border-zinc-700/50 transition-all duration-300"
                   >
-                    {tagName}
+                    #{tagName}
                   </Link>
                 );
               })}
@@ -163,7 +203,7 @@ export default function BlogPost({ params }: BlogPostProps) {
         )}
 
         {author && (
-          <div className="mt-8">
+          <div className="mt-12 pt-12 border-t border-zinc-800/50">
             <AuthorCard author={author} />
           </div>
         )}

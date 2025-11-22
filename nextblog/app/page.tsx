@@ -6,7 +6,7 @@ import Newsletter from "./components/Newsletter";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white dark:bg-black">
+    <div className="min-h-screen bg-zinc-950">
       <Hero />
       <FeaturedPost />
       <RecentPosts />

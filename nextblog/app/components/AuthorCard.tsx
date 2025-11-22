@@ -22,7 +22,7 @@ export default function AuthorCard({ author, compact = false }: AuthorCardProps)
     return (
       <div className="flex items-center gap-3">
         {avatarUrl ? (
-          <div className="relative w-10 h-10 rounded-full overflow-hidden bg-zinc-200 dark:bg-zinc-800">
+          <div className="relative w-10 h-10 rounded-full overflow-hidden bg-zinc-800">
             <Image
               src={`http://localhost:1337${avatarUrl}`}
               alt={username}
@@ -36,18 +36,18 @@ export default function AuthorCard({ author, compact = false }: AuthorCardProps)
           </div>
         )}
         <div>
-          <p className="font-medium text-black dark:text-white text-sm">{username}</p>
-          {bio && <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-1">{bio}</p>}
+          <p className="font-medium text-white text-sm">{username}</p>
+          {bio && <p className="text-xs text-zinc-400 line-clamp-1">{bio}</p>}
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-6 border border-zinc-200 dark:border-zinc-800">
+    <div className="bg-zinc-900 rounded-2xl p-6 border border-zinc-800">
       <div className="flex items-start gap-4">
         {avatarUrl ? (
-          <div className="relative w-16 h-16 rounded-full overflow-hidden bg-zinc-200 dark:bg-zinc-800 flex-shrink-0">
+          <div className="relative w-16 h-16 rounded-full overflow-hidden bg-zinc-800 flex-shrink-0">
             <Image
               src={`http://localhost:1337${avatarUrl}`}
               alt={username}
@@ -62,11 +62,11 @@ export default function AuthorCard({ author, compact = false }: AuthorCardProps)
         )}
         
         <div className="flex-1">
-          <h3 className="font-bold text-lg text-black dark:text-white mb-1">
+          <h3 className="font-bold text-lg text-white mb-1">
             {username}
           </h3>
           {bio && (
-            <p className="text-zinc-600 dark:text-zinc-400 text-sm mb-3">
+            <p className="text-zinc-400 text-sm mb-3">
               {bio}
             </p>
           )}
