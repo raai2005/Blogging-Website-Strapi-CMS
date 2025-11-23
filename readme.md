@@ -82,10 +82,10 @@ graph TB
         subgraph "Pages & Routes"
             Home[Home Page<br/>/]
             Blog[Blog Listing<br/>/blog]
-            BlogPost[Blog Post Detail<br/>/blog/[slug]]
+            BlogPost["Blog Post Detail<br/>/blog/[slug]"]
             Categories[Categories Page<br/>/categories]
-            CategoryPage[Category Posts<br/>/category/[slug]]
-            TagPage[Tag Posts<br/>/tag/[slug]]
+            CategoryPage["Category Posts<br/>/category/[slug]"]
+            TagPage["Tag Posts<br/>/tag/[slug]"]
             About[About Page<br/>/about]
             Contact[Contact Page<br/>/contact]
         end
