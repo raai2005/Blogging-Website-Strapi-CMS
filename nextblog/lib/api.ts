@@ -68,22 +68,27 @@ export async function getCategories() {
 }
 
 /**
- * 5. Subscribe to Newsletter
+ * 5. Subscribe to Newsletter (ConvertKit)
  * Used in: components/Newsletter.tsx
  */
 export async function subscribeNewsletter(email: string) {
   try {
-    const response = await fetch(`${STRAPI_URL}/api/subscribers`, {
+    const response = await fetch('https://api.convertkit.com/v3/forms/8801916/subscribe', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        data: { email }
+        api_key: process.env.CONVERT_KIT_API_KEY,
+        email,
       }),
     });
     const data = await response.json();
-    return { success: true, data };
+    if (response.ok) {
+      return { success: true, data };
+    } else {
+      return { success: false, error: data.error || 'Failed to subscribe.' };
+    }
   } catch (error) {
     console.error('Error subscribing to newsletter:', error);
     return { success: false, error };
@@ -218,7 +223,10 @@ export async function submitContactForm(formData: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        data: formData
+        data: {
+          ...formData,
+          createdAt: new Date().toISOString()
+        }
       }),
     });
     const data = await response.json();

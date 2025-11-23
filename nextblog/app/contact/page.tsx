@@ -22,7 +22,7 @@ export default function ContactPage() {
       const result = await submitContactForm(formData);
       if (result.success) {
         setStatus('success');
-        setMessage('Message sent successfully! We\'ll get back to you soon.');
+        setMessage('Message sent successfully!');
         setFormData({ name: '', email: '', message: '' });
       } else {
         setStatus('error');
