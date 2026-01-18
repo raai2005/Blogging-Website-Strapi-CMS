@@ -2,13 +2,37 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-
-// TODO: Hero content can be made dynamic from Strapi
-// Create a "Hero" or "Homepage Settings" single type in Strapi
-// API Endpoint: GET http://localhost:1337/api/hero
-// Fetch title, description, and CTA button text
+import { useEffect, useState } from "react";
+import { getHeroContent } from "@/lib/api";
 
 export default function Hero() {
+  const [heroContent, setHeroContent] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchHero = async () => {
+      const data = await getHeroContent();
+      if (data) {
+        setHeroContent(data.attributes || data);
+      }
+    };
+    fetchHero();
+  }, []);
+
+  // Default content if Strapi is not connected or empty
+  const title = heroContent?.title || (
+    <>
+      Discover Amazing
+      <br />
+      <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
+        Stories
+      </span>
+    </>
+  );
+  
+  const description = heroContent?.description || "Explore insightful articles, tutorials, and stories crafted with care";
+  const ctaText = heroContent?.ctaText || "Explore Blog Posts";
+  const ctaLink = heroContent?.ctaLink || "/blog";
+
   return (
     <section className="relative bg-gradient-to-br from-zinc-950 via-zinc-900 to-violet-950 py-24 md:py-36 overflow-hidden">
       {/* Animated background elements */}
@@ -36,11 +60,7 @@ export default function Hero() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-white leading-tight"
         >
-          Discover Amazing
-          <br />
-          <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
-            Stories
-          </span>
+          {title}
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: -20 }}
@@ -48,7 +68,7 @@ export default function Hero() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-xl md:text-2xl text-zinc-300 max-w-3xl mx-auto mb-10 leading-relaxed"
         >
-          Explore insightful articles, tutorials, and stories crafted with care
+          {description}
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -57,11 +77,11 @@ export default function Hero() {
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
           <Link
-            href="/blog"
+            href={ctaLink}
             className="group px-8 py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-xl hover:from-violet-600 hover:to-purple-700 transition-all duration-300 font-semibold text-lg shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 hover:scale-105 transform"
           >
             <span className="flex items-center justify-center gap-2">
-              Explore Blog Posts
+              {ctaText}
               <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
